@@ -114,7 +114,7 @@ namespace Bencodex.Tests.Types
             object ol = l;
             object ob = b;
             object ox = x;
-            object on = null;
+            object on = null!;
 
             Assert.Equal(0, x.CompareTo(x));
             Assert.Equal(0, x.CompareTo(ox));
@@ -216,7 +216,7 @@ namespace Bencodex.Tests.Types
             Codec codec = new Codec();
             AssertEqual(
                 new byte[] { 0x69, 0x31, 0x32, 0x33, 0x65 },  // "i123e"
-                codec.Encode(convert(123))
+                codec.Encode(convert(123)!)
             );
             Integer? i = convert(-123);
             if (i != null)
@@ -233,7 +233,7 @@ namespace Bencodex.Tests.Types
 
             AssertEqual(
                 new byte[] { 0x69, 0x30, 0x65 },  // "i0e"
-                codec.Encode(convert(0))
+                codec.Encode(convert(0)!)
             );
             i = convert(-0);
             if (i != null)

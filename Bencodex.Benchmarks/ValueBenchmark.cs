@@ -80,13 +80,13 @@ namespace Bencodex.Benchmarks
         [Benchmark]
         public void Dict_LookUpExist()
         {
-            _dict.TryGetValue(_txtFoo, out IValue _);
+            _dict.TryGetValue(_txtFoo, out IValue? _);
         }
 
         [Benchmark]
         public void Dict_LookUpNonExist()
         {
-            _dict.TryGetValue(_binFoo, out IValue _);
+            _dict.TryGetValue(_binFoo, out IValue? _);
         }
 
         [Benchmark]

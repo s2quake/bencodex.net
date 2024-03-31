@@ -1,4 +1,5 @@
 using System;
+using System.ComponentModel;
 using System.Diagnostics.Contracts;
 using System.Globalization;
 using System.Numerics;
@@ -212,9 +213,9 @@ namespace Bencodex.Types
             return Value.CompareTo(other.Value);
         }
 
-        public override bool Equals(object obj) => obj is Integer other && Equals(other);
+        public override bool Equals(object? obj) => obj is Integer other && Equals(other);
 
-        public bool Equals(IValue other) => other is Integer i && Equals(i);
+        public bool Equals(IValue? other) => other is Integer i && Equals(i);
 
         public bool Equals(Integer other) => Value.Equals(other.Value);
 

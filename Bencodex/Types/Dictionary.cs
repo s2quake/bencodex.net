@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Collections.Immutable;
+using System.Diagnostics.CodeAnalysis;
 using System.Diagnostics.Contracts;
 using System.Linq;
 using System.Numerics;
@@ -1037,9 +1038,9 @@ namespace Bencodex.Types
         public bool ContainsKey(byte[] key) => ContainsKey(new Binary(key));
 
         /// <inheritdoc cref="IReadOnlyDictionary{TKey,TValue}.TryGetValue(TKey, out TValue)"/>
-        public bool TryGetValue(IKey key, out IValue value)
+        public bool TryGetValue(IKey key, [MaybeNullWhen(false)] out IValue value)
         {
-            if (_dict.TryGetValue(key, out IValue v))
+            if (_dict.TryGetValue(key, out IValue? v))
             {
                 value = v;
                 return true;
@@ -1629,17 +1630,17 @@ namespace Bencodex.Types
         public bool TryGetKey(IKey equalKey, out IKey actualKey) =>
             _dict.TryGetKey(equalKey, out actualKey);
 
-        public override bool Equals(object obj) => obj is Dictionary d && Equals(d);
+        public override bool Equals(object? obj) => obj is Dictionary d && Equals(d);
 
-        public bool Equals(IValue other) => other is Dictionary d && Equals(d);
+        public bool Equals(IValue? other) => other is Dictionary d && Equals(d);
 
-        public bool Equals(Dictionary other)
+        public bool Equals(Dictionary? other)
         {
-            if (Count == other.Count)
+            if (other is { } && Count == other.Count)
             {
                 foreach (KeyValuePair<IKey, IValue> kv in _dict)
                 {
-                    if (!other.TryGetValue(kv.Key, out IValue v) ||
+                    if (!other.TryGetValue(kv.Key, out IValue? v) ||
                         !kv.Value.Equals(v))
                     {
                         return false;

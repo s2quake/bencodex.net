@@ -1,4 +1,5 @@
 using System;
+using System.ComponentModel;
 using System.Diagnostics.Contracts;
 using System.Globalization;
 using System.Text;
@@ -64,11 +65,11 @@ namespace Bencodex.Types
 
         public static bool operator !=(string left, Text right) => !left.Equals(right.Value);
 
-        public bool Equals(IValue other) => other is Text t && Equals(t);
+        public bool Equals(IValue? other) => other is Text t && Equals(t);
 
         public bool Equals(Text other) => Value.Equals(other);
 
-        public override bool Equals(object obj) => obj is Text t && Equals(t);
+        public override bool Equals(object? obj) => obj is Text t && Equals(t);
 
         public override int GetHashCode()
         {

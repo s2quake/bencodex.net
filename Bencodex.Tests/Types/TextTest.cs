@@ -57,7 +57,7 @@ namespace Bencodex.Tests.Types
             Text? n = null;
             object os = (object)s;
             object ot = (object)t;
-            object on = null;
+            object? on = null;
 
             Assert.Equal(0, t.CompareTo(t));
             Assert.Equal(0, t.CompareTo(ot));

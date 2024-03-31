@@ -10,7 +10,7 @@ namespace Bencodex.Tests
         public static void AssertEqual(
             byte[] expected,
             byte[] actual,
-            string message = null
+            string? message = null
         )
         {
             Encoding utf8 = Encoding.GetEncoding(

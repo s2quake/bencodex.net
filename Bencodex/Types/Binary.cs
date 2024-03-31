@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Collections.Immutable;
+using System.ComponentModel;
 using System.Diagnostics.Contracts;
 using System.Globalization;
 using System.Linq;
@@ -23,6 +24,11 @@ namespace Bencodex.Types
 
         public Binary(ImmutableArray<byte> value)
         {
+            if (value.IsDefault == true)
+            {
+                throw new ArgumentException("The given value must not be default.", nameof(value));
+            }
+
             _value = value;
             _hashCode = new int?[1];
             _digest = new[] { (ImmutableArray<byte>?)null };
@@ -193,7 +199,7 @@ namespace Bencodex.Types
 
         public override bool Equals(object? obj) => obj is Binary other && Equals(other);
 
-        public bool Equals(IValue other) => other is Binary i && Equals(i);
+        public bool Equals(IValue? other) => other is Binary i && Equals(i);
 
         public bool Equals(Binary other) => ByteArray.SequenceEqual(other.ByteArray);
 

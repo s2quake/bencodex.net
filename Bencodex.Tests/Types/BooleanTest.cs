@@ -46,7 +46,7 @@ namespace Bencodex.Tests.Types
             Boolean? n = null;
             object ob = (object)b;
             object ox = (object)x;
-            object on = null;
+            object? on = null;
 
             Assert.Equal(0, x.CompareTo(x));
             Assert.Equal(0, x.CompareTo(ox));

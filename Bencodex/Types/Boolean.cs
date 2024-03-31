@@ -1,4 +1,5 @@
 using System;
+using System.ComponentModel;
 using System.Diagnostics.Contracts;
 
 namespace Bencodex.Types
@@ -70,9 +71,9 @@ namespace Bencodex.Types
 
         public bool Equals(Boolean other) => Value == other.Value;
 
-        public bool Equals(IValue other) => other is Boolean b && Equals(b);
+        public bool Equals(IValue? other) => other is Boolean b && Equals(b);
 
-        public override bool Equals(object obj) => obj is Boolean b && Equals(b);
+        public override bool Equals(object? obj) => obj is Boolean b && Equals(b);
 
         public override int GetHashCode()
         {

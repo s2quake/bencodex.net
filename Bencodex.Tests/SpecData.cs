@@ -7,7 +7,7 @@ namespace Bencodex.Tests
 {
     public class SpecData : IEnumerable<Spec>
     {
-        public SpecData(string testSuitePath = null)
+        public SpecData(string? testSuitePath = null)
         {
             TestSuitePath = testSuitePath ?? DefaultTestSuitePath();
         }
@@ -15,7 +15,7 @@ namespace Bencodex.Tests
         public string TestSuitePath { get; }
 
         public static string DefaultTestSuitePath(
-            [CallerFilePath] string path = null
+            [CallerFilePath] string? path = null
         )
         {
             path = path == null
