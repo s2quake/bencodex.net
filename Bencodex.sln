@@ -11,6 +11,10 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Bencodex.Json", "Bencodex.J
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Bencodex.Json.Tests", "Bencodex.Json.Tests\Bencodex.Json.Tests.csproj", "{D4E22BE3-5A6D-49F3-BFC5-CC2B5A0D93D3}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Bencodex.Serialization.Tests", "Bencodex.Serialization.Tests\Bencodex.Serialization.Tests.csproj", "{3A44B24D-856D-4555-A3F6-4ABD8D9E01D4}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Bencodex.Serialization", "Bencodex.Serialization\Bencodex.Serialization.csproj", "{6D555863-BE62-4625-8BCF-EE8123737B98}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -37,5 +41,13 @@ Global
 		{D4E22BE3-5A6D-49F3-BFC5-CC2B5A0D93D3}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{D4E22BE3-5A6D-49F3-BFC5-CC2B5A0D93D3}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{D4E22BE3-5A6D-49F3-BFC5-CC2B5A0D93D3}.Release|Any CPU.Build.0 = Release|Any CPU
+		{3A44B24D-856D-4555-A3F6-4ABD8D9E01D4}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{3A44B24D-856D-4555-A3F6-4ABD8D9E01D4}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{3A44B24D-856D-4555-A3F6-4ABD8D9E01D4}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{3A44B24D-856D-4555-A3F6-4ABD8D9E01D4}.Release|Any CPU.Build.0 = Release|Any CPU
+		{6D555863-BE62-4625-8BCF-EE8123737B98}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{6D555863-BE62-4625-8BCF-EE8123737B98}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{6D555863-BE62-4625-8BCF-EE8123737B98}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{6D555863-BE62-4625-8BCF-EE8123737B98}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal
