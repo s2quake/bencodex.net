@@ -61,7 +61,7 @@ public class AsStringTest
         {
         }
 
-        protected override BencodeConverter GetConverter(Type? declaringType, Type type)
+        protected override BencodeConverter GetConverter(IBencodeTypeDescriptor typeDescriptor, Type type)
         {
             if (type == typeof(BigInteger) ||
                 type == typeof(short) ||
@@ -74,7 +74,7 @@ public class AsStringTest
                 return CustomConverter.Default;
             }
 
-            return base.GetConverter(declaringType, type);
+            return base.GetConverter(typeDescriptor, type);
         }
     }
 

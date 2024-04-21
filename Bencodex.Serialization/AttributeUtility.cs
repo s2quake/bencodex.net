@@ -6,8 +6,8 @@ internal static class AttributeUtility
 {
     public static object GetKey(MemberInfo memberInfo)
     {
-        var attribute = Attribute.GetCustomAttribute(memberInfo, typeof(BencodeAttribute));
-        if (attribute is BencodeAttribute bencodeAttribute && bencodeAttribute.Key != DBNull.Value)
+        var attribute = Attribute.GetCustomAttribute(memberInfo, typeof(BencodeAttributeBase));
+        if (attribute is BencodeAttributeBase bencodeAttribute && bencodeAttribute.Key != DBNull.Value)
         {
             return bencodeAttribute.Key;
         }
@@ -17,8 +17,8 @@ internal static class AttributeUtility
 
     public static bool IsBinary(MemberInfo memberInfo)
     {
-        var attribute = Attribute.GetCustomAttribute(memberInfo, typeof(BencodeAttribute));
-        if (attribute is BencodeAttribute bencodeAttribute)
+        var attribute = Attribute.GetCustomAttribute(memberInfo, typeof(BencodeAttributeBase));
+        if (attribute is BencodeAttributeBase bencodeAttribute)
         {
             return bencodeAttribute.IsBinary;
         }
@@ -33,7 +33,7 @@ internal static class AttributeUtility
             return false;
         }
 
-        return Attribute.GetCustomAttribute(memberInfo, typeof(BencodeAttribute)) != null;
+        return Attribute.GetCustomAttribute(memberInfo, typeof(BencodeAttributeBase)) != null;
     }
 
     public static Type GetConverterType(Type type)

@@ -47,7 +47,6 @@ public class BooleanArrayNullableTest
     [MemberData(nameof(TestData))]
     public void SetFieldTest(string name, Array? expectedValue)
     {
-        var s = RandomUtility.NullableArray(RandomUtility.Boolean);
         var descriptors = BencodeDescriptor.GetDescriptors(typeof(FieldClass));
         var descriptor = descriptors[name];
         var instance1 = new FieldClass();

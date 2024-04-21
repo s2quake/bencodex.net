@@ -2,7 +2,7 @@ using Bencodex.Types;
 
 namespace Bencodex.Serialization;
 
-public abstract class BencodeDescriptor
+public abstract class BencodeDescriptor : IBencodeTypeDescriptor
 {
     private static readonly Dictionary<Type, BencodeDescriptorCollection> DescriptorsByType = [];
     private static readonly object LockObject = new();
@@ -16,6 +16,8 @@ public abstract class BencodeDescriptor
     public abstract Type DeclaringType { get; }
 
     public abstract bool IsBinary { get; }
+
+    public Type? OwnType => DeclaringType;
 
     public static BencodeDescriptorCollection GetDescriptors(object obj)
         => GetDescriptors(obj.GetType());
@@ -39,7 +41,7 @@ public abstract class BencodeDescriptor
     public abstract void SetValue(object obj, object? value);
 
     public virtual BencodeConverter GetConverter(IBencodeTypeContext typeContext)
-        => typeContext.GetConverter(DeclaringType, MemberType);
+        => typeContext.GetConverter(this, MemberType);
 
     internal IValue SerilizeValue(IBencodeTypeContext typeContext, object? obj)
     {

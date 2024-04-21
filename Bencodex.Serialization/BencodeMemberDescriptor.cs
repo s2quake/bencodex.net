@@ -1,5 +1,4 @@
 using System.Reflection;
-using Bencodex.Serialization.Converters;
 using Bencodex.Types;
 
 namespace Bencodex.Serialization;
@@ -64,22 +63,6 @@ internal sealed class BencodeMemberDescriptor : BencodeDescriptor
         {
             throw new NotSupportedException();
         }
-    }
-
-    public override BencodeConverter GetConverter(IBencodeTypeContext typeContext)
-    {
-        var underlyingType = Nullable.GetUnderlyingType(MemberType);
-        var memberType = underlyingType ?? MemberType;
-        var converter = BencodeUtility.ConverterByType.ContainsKey(memberType) == true ?
-            BencodeUtility.ConverterByType[memberType] :
-            base.GetConverter(typeContext);
-
-        if (underlyingType != null)
-        {
-            return new NullableConverter(converter);
-        }
-
-        return converter;
     }
 
     private static Type GetMemberType(MemberInfo memberInfo) => memberInfo switch

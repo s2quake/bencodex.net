@@ -1,14 +1,17 @@
+using Bencodex.Serialization.Converters;
 using Bencodex.Types;
 
 namespace Bencodex.Serialization;
 
-public class BencodeSerializer : IBencodeTypeContext
+public class BencodeSerializer : IBencodeTypeContext, IBencodeTypeDescriptor
 {
     public BencodeSerializer()
     {
     }
 
-    bool IBencodeTypeContext.IsBinary => false;
+    bool IBencodeTypeDescriptor.IsBinary => false;
+
+    Type IBencodeTypeDescriptor.OwnType => GetType();
 
     public IValue Serialize(object? obj)
     {
@@ -22,7 +25,7 @@ public class BencodeSerializer : IBencodeTypeContext
         }
         else
         {
-            var converter = GetConverter(declaringType: null, type: obj.GetType());
+            var converter = GetConverter(this, type: obj.GetType());
             return converter.ConvertFrom(this, obj);
         }
     }
@@ -43,14 +46,25 @@ public class BencodeSerializer : IBencodeTypeContext
         }
         else
         {
-            var converter = GetConverter(declaringType: null, type);
+            var converter = GetConverter(this, type);
             return converter.ConvertTo(typeContext: this, value, destinationType: type);
         }
     }
 
-    BencodeConverter IBencodeTypeContext.GetConverter(Type? declaringType, Type type)
-        => GetConverter(declaringType, type);
+    BencodeConverter IBencodeTypeContext.GetConverter(IBencodeTypeDescriptor typeDescriptor, Type type)
+    {
+        var underlyingType = Nullable.GetUnderlyingType(type);
+        var memberType = underlyingType ?? type;
+        var converter = GetConverter(this, memberType);
 
-    protected virtual BencodeConverter GetConverter(Type? declaringType, Type type)
-        => BencodeBaseConverter.Default;
+        if (underlyingType != null)
+        {
+            return new NullableConverter(converter);
+        }
+
+        return converter;
+    }
+
+    protected virtual BencodeConverter GetConverter(IBencodeTypeDescriptor typeDescriptor, Type type)
+        => BencodeUtility.GetConverter(type) ?? BencodeBaseConverter.Default;
 }

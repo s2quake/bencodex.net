@@ -1,43 +1,38 @@
+using System.Collections;
+using System.Diagnostics.CodeAnalysis;
 using Bencodex.Types;
 
 namespace Bencodex.Serialization.Converters;
 
 internal sealed class ListConverter : BencodeConverter
 {
+    public static ListConverter Default { get; } = new ListConverter();
+
     public override bool CanConvertFrom(IBencodeTypeContext typeContext, Type sourceType)
     {
-        if (typeof(Array).IsAssignableFrom(sourceType))
+        if (IsSupportedType(sourceType, out var elementType) == true)
         {
-            return IsSupportedArrayType(sourceType);
+            var typeDescriptor = new BencodeTypeDescriptor(sourceType);
+            var converter = typeContext.GetConverter(typeDescriptor, elementType);
+            return converter.CanConvertFrom(typeContext, elementType);
         }
 
         return base.CanConvertFrom(typeContext, sourceType);
     }
 
-    public override bool CanConvertTo(IBencodeTypeContext typeContext, Type destinationType)
-    {
-        if (typeof(Array).IsAssignableFrom(destinationType))
-        {
-            return IsSupportedArrayType(destinationType);
-        }
-
-        return base.CanConvertTo(typeContext, destinationType);
-    }
-
     public override IValue ConvertFrom(IBencodeTypeContext typeContext, object value)
     {
-        if (value is Array @array)
+        var valueType = value.GetType();
+        if (IsSupportedType(valueType, out var elementType) == true)
         {
-            VerifySupportedArrayType(@array.GetType());
-
-            var itemList = new List<IValue>(@array.Length);
-            var elementType = @array.GetType().GetElementType()!;
-            var converter = typeContext.GetConverter(@array.GetType(), elementType);
-            for (var i = 0; i < @array.Length; i++)
+            var length = BencodeUtility.GetCollectionCount(value);
+            var itemList = new List<IValue>(length);
+            var typeDescriptor = new BencodeTypeDescriptor(valueType);
+            var converter = typeContext.GetConverter(typeDescriptor, elementType);
+            foreach (var item in (IEnumerable)value)
             {
-                var arrayItem = @array.GetValue(i);
-                var arrayValue = arrayItem != null ? converter.ConvertFrom(typeContext, arrayItem)! : Null.Value;
-                itemList.Add(arrayValue);
+                var itemValue = item != null ? converter.ConvertFrom(typeContext, item) : Null.Value;
+                itemList.Add(itemValue);
             }
 
             return new List(itemList);
@@ -46,43 +41,70 @@ internal sealed class ListConverter : BencodeConverter
         throw new NotSupportedException();
     }
 
+    public override bool CanConvertTo(IBencodeTypeContext typeContext, Type destinationType)
+    {
+        if (IsSupportedType(destinationType, out var elementType) == true)
+        {
+            var typeDescriptor = new BencodeTypeDescriptor(destinationType);
+            var converter = typeContext.GetConverter(typeDescriptor, elementType);
+            return converter.CanConvertFrom(typeContext, elementType);
+        }
+
+        return base.CanConvertTo(typeContext, destinationType);
+    }
+
     public override object ConvertTo(IBencodeTypeContext typeContext, IValue value, Type destinationType)
     {
-        if (value is List list)
+        if (value is not List list)
         {
-            VerifySupportedArrayType(destinationType);
+            throw new NotSupportedException();
+        }
 
-            if (typeof(Array).IsAssignableFrom(destinationType))
-            {
-                var elementType = destinationType.GetElementType()!;
-                var array = Array.CreateInstance(elementType, list.Count);
-                var converter = typeContext.GetConverter(@array.GetType(), elementType);
-                for (var i = 0; i < list.Count; i++)
-                {
-                    var item = list[i];
-                    var itemValue = item == null || item is Null ? null : converter.ConvertTo(typeContext, item, elementType);
-                    array.SetValue(itemValue, i);
-                }
+        if (BencodeUtility.IsArrayType(destinationType) == true)
+        {
+            return BencodeUtility.ToArray(typeContext, value, destinationType);
+        }
 
-                return array;
-            }
+        if (BencodeUtility.IsImmutableListType(destinationType) == true)
+        {
+            return BencodeUtility.ToImmutableList(typeContext, list, destinationType);
+        }
+
+        if (BencodeUtility.IsImmutableArrayType(destinationType) == true)
+        {
+            return BencodeUtility.ToImmutableArray(typeContext, list, destinationType);
+        }
+
+        if (BencodeUtility.IsListType(destinationType) == true)
+        {
+            return BencodeUtility.ToList(typeContext, list, destinationType);
         }
 
         throw new NotSupportedException();
     }
 
-    private static bool IsSupportedArrayType(Type arrayType)
+    private static bool IsSupportedType(Type type, [MaybeNullWhen(false)] out Type elementType)
     {
-        var elementType = arrayType.GetElementType()!;
-        return BencodeUtility.IsSupportedType(elementType);
-    }
-
-    private static void VerifySupportedArrayType(Type arrayType)
-    {
-        var elementType = arrayType.GetElementType()!;
-        if (BencodeUtility.IsSupportedType(elementType) != true)
+        if (BencodeUtility.IsArrayType(type, out elementType) == true)
         {
-            throw new NotSupportedException($"Element type '{elementType}' of array type '{arrayType}' is not supported.");
+            return true;
         }
+
+        if (BencodeUtility.IsImmutableListType(type, out elementType) == true)
+        {
+            return true;
+        }
+
+        if (BencodeUtility.IsImmutableArrayType(type, out elementType) == true)
+        {
+            return true;
+        }
+
+        if (BencodeUtility.IsListType(type, out elementType) == true)
+        {
+            return true;
+        }
+
+        return false;
     }
 }

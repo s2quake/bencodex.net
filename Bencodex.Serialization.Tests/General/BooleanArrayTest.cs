@@ -83,13 +83,13 @@ public class BooleanArrayTest
 
     public sealed class FieldClass
     {
-        [BencodeArray]
+        [Bencode]
         public bool[] Boolean = RandomUtility.Array(RandomUtility.Boolean);
     }
 
     public sealed class PropertyClass
     {
-        [BencodeArray]
+        [Bencode]
         public bool[] Boolean { get; set; } = RandomUtility.Array(RandomUtility.Boolean);
     }
 }

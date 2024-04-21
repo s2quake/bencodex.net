@@ -32,7 +32,7 @@ internal sealed class BinaryConverter : BencodeConverter
 
     public override bool CanConvertFrom(IBencodeTypeContext typeContext, Type sourceType)
     {
-        if (typeContext.IsBinary == true && ConvertFromByType.ContainsKey(sourceType) == true)
+        if (ConvertFromByType.ContainsKey(sourceType) == true)
         {
             return true;
         }
@@ -42,8 +42,7 @@ internal sealed class BinaryConverter : BencodeConverter
 
     public override IValue ConvertFrom(IBencodeTypeContext typeContext, object value)
     {
-        if (typeContext.IsBinary == true &&
-            ConvertFromByType.TryGetValue(value.GetType(), out var converter) == true)
+        if (ConvertFromByType.TryGetValue(value.GetType(), out var converter) == true)
         {
             var byteArray = converter(value);
             return new Binary(byteArray);
@@ -54,7 +53,7 @@ internal sealed class BinaryConverter : BencodeConverter
 
     public override bool CanConvertTo(IBencodeTypeContext typeContext, Type destinationType)
     {
-        if (typeContext.IsBinary == true && ConvertToByType.ContainsKey(destinationType) == true)
+        if (ConvertToByType.ContainsKey(destinationType) == true)
         {
             return true;
         }
@@ -64,8 +63,7 @@ internal sealed class BinaryConverter : BencodeConverter
 
     public override object ConvertTo(IBencodeTypeContext typeContext, IValue value, Type destinationType)
     {
-        if (typeContext.IsBinary == true &&
-            ConvertToByType.TryGetValue(destinationType, out var converter) == true &&
+        if (ConvertToByType.TryGetValue(destinationType, out var converter) == true &&
             value is Binary binary)
         {
             return converter(binary.ToByteArray());

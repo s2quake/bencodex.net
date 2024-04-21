@@ -1,7 +1,6 @@
 using System.Collections;
 using System.Collections.Specialized;
 using System.Reflection;
-using System.Text;
 using Bencodex.Types;
 
 namespace Bencodex.Serialization;
