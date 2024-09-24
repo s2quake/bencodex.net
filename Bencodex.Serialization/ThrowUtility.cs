@@ -1,3 +1,5 @@
+using static Bencodex.Serialization.Utilities.TypeUtility;
+
 namespace Bencodex.Serialization;
 
 public static class ThrowUtility
@@ -12,7 +14,7 @@ public static class ThrowUtility
 
     public static void ThrowIfNotBencodable(object obj, string? message = null, string? paramName = null)
     {
-        if (BencodeUtility.IsBencodable(obj) != true)
+        if (IsBencodable(obj) != true)
         {
             throw new ArgumentException(
                 message ?? $"Parameter '{nameof(obj)}' must implement '{typeof(IBencodable)}'.",
@@ -23,7 +25,7 @@ public static class ThrowUtility
 
     public static void ThrowIfNotBencodable(Type type, string? message = null, string? paramName = null)
     {
-        if (BencodeUtility.IsBencodable(type) != true)
+        if (IsBencodable(type) != true)
         {
             throw new ArgumentException(
                 message ?? $"Parameter '{nameof(type)}' must implement '{typeof(IBencodable)}'.",

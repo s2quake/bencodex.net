@@ -1,6 +1,9 @@
 using System.Collections;
 using System.Diagnostics.CodeAnalysis;
+using Bencodex.Serialization.Utilities;
 using Bencodex.Types;
+using static Bencodex.Serialization.Utilities.ArrayUtility;
+using static Bencodex.Serialization.Utilities.ListUtility;
 
 namespace Bencodex.Serialization.Converters;
 
@@ -25,7 +28,7 @@ internal sealed class ListConverter : BencodeConverter
         var valueType = value.GetType();
         if (IsSupportedType(valueType, out var elementType) == true)
         {
-            var length = BencodeUtility.GetCollectionCount(value);
+            var length = CollectionUtility.GetCount(value);
             var itemList = new List<IValue>(length);
             var typeDescriptor = new BencodeTypeDescriptor(valueType);
             var converter = typeContext.GetConverter(typeDescriptor, elementType);
@@ -60,24 +63,24 @@ internal sealed class ListConverter : BencodeConverter
             throw new NotSupportedException();
         }
 
-        if (BencodeUtility.IsArrayType(destinationType) == true)
+        if (IsArray(destinationType) == true)
         {
-            return BencodeUtility.ToArray(typeContext, value, destinationType);
+            return ToArray(typeContext, value, destinationType);
         }
 
-        if (BencodeUtility.IsImmutableListType(destinationType) == true)
+        if (IsImmutableList(destinationType) == true)
         {
-            return BencodeUtility.ToImmutableList(typeContext, list, destinationType);
+            return ToImmutableList(typeContext, list, destinationType);
         }
 
-        if (BencodeUtility.IsImmutableArrayType(destinationType) == true)
+        if (IsImmutableArray(destinationType) == true)
         {
-            return BencodeUtility.ToImmutableArray(typeContext, list, destinationType);
+            return ToImmutableArray(typeContext, list, destinationType);
         }
 
-        if (BencodeUtility.IsListType(destinationType) == true)
+        if (IsList(destinationType) == true)
         {
-            return BencodeUtility.ToList(typeContext, list, destinationType);
+            return ToList(typeContext, list, destinationType);
         }
 
         throw new NotSupportedException();
@@ -85,22 +88,22 @@ internal sealed class ListConverter : BencodeConverter
 
     private static bool IsSupportedType(Type type, [MaybeNullWhen(false)] out Type elementType)
     {
-        if (BencodeUtility.IsArrayType(type, out elementType) == true)
+        if (IsArray(type, out elementType) == true)
         {
             return true;
         }
 
-        if (BencodeUtility.IsImmutableListType(type, out elementType) == true)
+        if (IsImmutableList(type, out elementType) == true)
         {
             return true;
         }
 
-        if (BencodeUtility.IsImmutableArrayType(type, out elementType) == true)
+        if (IsImmutableArray(type, out elementType) == true)
         {
             return true;
         }
 
-        if (BencodeUtility.IsListType(type, out elementType) == true)
+        if (IsList(type, out elementType) == true)
         {
             return true;
         }

@@ -1,4 +1,5 @@
 using System.Reflection;
+using Bencodex.Serialization.Utilities;
 using Bencodex.Types;
 
 namespace Bencodex.Serialization;
@@ -19,14 +20,14 @@ internal sealed class BencodeMemberDescriptor : BencodeDescriptor
         }
 
         if (GetMemberType(memberInfo) is { } memberType &&
-            BencodeUtility.IsSupportedType(memberType) != true)
+            TypeUtility.IsSupportedType(memberType) != true)
         {
             throw new ArgumentException(
                 message: $"The member type '{memberType}' is not supported.",
                 paramName: nameof(memberInfo));
         }
 
-        Key = BencodeUtility.GetKey(AttributeUtility.GetKey(memberInfo));
+        Key = DictionaryUtility.GetKey(AttributeUtility.GetKey(memberInfo));
         Name = memberInfo.Name;
         _memberInfo = memberInfo;
         IsBinary = AttributeUtility.IsBinary(memberInfo);

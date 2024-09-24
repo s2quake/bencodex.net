@@ -1,5 +1,5 @@
-using System.Collections.Immutable;
 using Bencodex.Types;
+using static Bencodex.Serialization.Utilities.DictionaryUtility;
 
 namespace Bencodex.Serialization.Converters;
 
@@ -9,10 +9,8 @@ internal sealed class DictionaryConverter : BencodeConverter
 
     public override bool CanConvertFrom(IBencodeTypeContext typeContext, Type sourceType)
     {
-        if (typeof(ImmutableDictionary<object, object>) == sourceType ||
-            typeof(ImmutableDictionary<object, object?>) == sourceType ||
-            typeof(Dictionary<object, object>) == sourceType ||
-            typeof(Dictionary<object, object?>) == sourceType)
+        if (IsImmutableDictionary(sourceType) ||
+            IsDictionary(sourceType))
         {
             return true;
         }
@@ -22,13 +20,11 @@ internal sealed class DictionaryConverter : BencodeConverter
 
     public override IValue ConvertFrom(IBencodeTypeContext typeContext, object value)
     {
-        var destinationType = value.GetType();
-        if (typeof(ImmutableDictionary<object, object>) == destinationType ||
-            typeof(ImmutableDictionary<object, object?>) == destinationType ||
-            typeof(Dictionary<object, object>) == destinationType ||
-            typeof(Dictionary<object, object?>) == destinationType)
+        var sourceType = value.GetType();
+        if (IsImmutableDictionary(sourceType) ||
+            IsDictionary(sourceType))
         {
-            return BencodeUtility.ToBencodeDictionary(typeContext, value);
+            return ToBencodeDictionary(typeContext, value);
         }
 
         throw new NotSupportedException();
@@ -36,10 +32,8 @@ internal sealed class DictionaryConverter : BencodeConverter
 
     public override bool CanConvertTo(IBencodeTypeContext typeContext, Type destinationType)
     {
-        if (typeof(ImmutableDictionary<object, object>) == destinationType ||
-            typeof(ImmutableDictionary<object, object?>) == destinationType ||
-            typeof(Dictionary<object, object>) == destinationType ||
-            typeof(Dictionary<object, object?>) == destinationType)
+        if (IsImmutableDictionary(destinationType) ||
+            IsDictionary(destinationType))
         {
             return true;
         }
@@ -49,18 +43,18 @@ internal sealed class DictionaryConverter : BencodeConverter
 
     public override object ConvertTo(IBencodeTypeContext typeContext, IValue value, Type destinationType)
     {
-        if (value is Dictionary dictionary)
+        if (value is not Dictionary dictionary)
         {
-            if (typeof(ImmutableDictionary<object, object>) == destinationType ||
-                typeof(ImmutableDictionary<object, object?>) == destinationType)
-            {
-                return BencodeUtility.ToImmutableDictionary(typeContext, dictionary, destinationType);
-            }
-            else if (typeof(Dictionary<object, object>) == destinationType ||
-                    typeof(Dictionary<object, object?>) == destinationType)
-            {
-                return BencodeUtility.ToDictionary(typeContext, dictionary, destinationType);
-            }
+            throw new NotSupportedException();
+        }
+
+        if (IsImmutableDictionary(destinationType) == true)
+        {
+            return ToImmutableDictionary(typeContext, dictionary, destinationType);
+        }
+        else if (IsDictionary(destinationType) == true)
+        {
+            return ToDictionary(typeContext, dictionary, destinationType);
         }
 
         throw new NotSupportedException();

@@ -11,16 +11,28 @@ public static partial class RandomUtility
     public const int MaxDepth = 3;
 
     private static readonly string[] Words;
-    private static readonly TypeCode[] ValueTypeCodes =
-    [
-        TypeCode.Empty,
-        TypeCode.Boolean,
-        TypeCode.Int32,
-        TypeCode.UInt32,
-        TypeCode.Int64,
-        TypeCode.UInt64,
-        TypeCode.String,
-    ];
+
+    private static readonly Dictionary<Type, Func<object>> ValueByType = new()
+    {
+        { typeof(bool), () => Boolean() },
+        { typeof(byte), () => Byte() },
+        { typeof(sbyte), () => SByte() },
+        { typeof(short), () => Int16() },
+        { typeof(ushort), () => UInt16() },
+        { typeof(int), () => Int32() },
+        { typeof(uint), () => UInt32() },
+        { typeof(long), () => Int64() },
+        { typeof(ulong), () => UInt64() },
+        { typeof(BigInteger), () => BigInteger() },
+        { typeof(float), () => Single() },
+        { typeof(double), () => Double() },
+        { typeof(decimal), () => Decimal() },
+        { typeof(char), () => Char() },
+        { typeof(string), () => String() },
+        { typeof(DateTime), () => DateTime() },
+        { typeof(TimeSpan), () => TimeSpan() },
+        { typeof(DateTimeOffset), () => DateTimeOffset() },
+    };
 
     private static readonly ThreadLocal<int> DepthValue = new();
 
@@ -194,86 +206,6 @@ public static partial class RandomUtility
         }
 
         return sb.ToString();
-    }
-
-    public static object? Value(TypeCode typeCode) => typeCode switch
-    {
-        TypeCode.Empty => null,
-        TypeCode.Object => Boolean() ? Array(Byte) : (object?)Dictionary(),
-        TypeCode.DBNull => DBNull.Value,
-        TypeCode.Boolean => Boolean(),
-        TypeCode.Char => Word().Random(),
-        TypeCode.SByte => SByte(),
-        TypeCode.Byte => Byte(),
-        TypeCode.Int16 => Int16(),
-        TypeCode.UInt16 => UInt16(),
-        TypeCode.Int32 => Int32(),
-        TypeCode.UInt32 => UInt32(),
-        TypeCode.Int64 => Int64(),
-        TypeCode.UInt64 => UInt64(),
-        TypeCode.Single => Single(),
-        TypeCode.Double => Double(),
-        TypeCode.Decimal => Decimal(),
-        TypeCode.String => Word(),
-        _ => throw new NotSupportedException(),
-    };
-
-    public static object? Value(params TypeCode[] typeCodes)
-    {
-        var typeCode = typeCodes.Length > 0 ? typeCodes.Random() : Enum<TypeCode>();
-        return Value(typeCode);
-    }
-
-    public static Dictionary<object, object?> Dictionary()
-        => Dictionary(count: 10, isNullable: true);
-
-    public static Dictionary<object, object?> Dictionary(bool isNullable)
-        => Dictionary(count: 10, isNullable: isNullable);
-
-    public static Dictionary<object, object?> Dictionary(int count, bool isNullable)
-    {
-        using var depthScope = new DepthScope();
-        var dictionary = new Dictionary<object, object?>(count);
-        for (var i = 0; i < count; i++)
-        {
-            var typeCode = ValueTypeCodes.Random();
-            if (typeCode == TypeCode.Empty && isNullable != true)
-            {
-                continue;
-            }
-
-            var key = String();
-            var value = Int32() % 10 == 0 && DepthValue.Value < MaxDepth ? Dictionary(count, isNullable) : Value(typeCode);
-            dictionary[key] = value;
-        }
-
-        return dictionary;
-    }
-
-    public static ImmutableDictionary<object, object?> ImmutableDictionary()
-        => ImmutableDictionary(count: 10, isNullable: true);
-
-    public static ImmutableDictionary<object, object?> ImmutableDictionary(bool isNullable)
-        => ImmutableDictionary(count: 10, isNullable: isNullable);
-
-    public static ImmutableDictionary<object, object?> ImmutableDictionary(int count, bool isNullable)
-    {
-        using var depthScope = new DepthScope();
-        var pairList = new List<KeyValuePair<object, object?>>(count);
-        for (var i = 0; i < count; i++)
-        {
-            var typeCode = ValueTypeCodes.Random();
-            if (typeCode == TypeCode.Empty && isNullable != true)
-            {
-                continue;
-            }
-
-            var key = String();
-            var value = Int32() % 10 == 0 && DepthValue.Value < MaxDepth ? ImmutableDictionary(count, isNullable) : Value(typeCode);
-            pairList.Add(new KeyValuePair<object, object?>(key, value));
-        }
-
-        return ImmutableDictionary<object, object?>.Empty.AddRange(pairList);
     }
 
     public static T[] Array<T>(Func<T> generator)

@@ -10,9 +10,9 @@ internal sealed class BencodeTypeDescriptor : IBencodeTypeDescriptor
         OwnType = descriptor.DeclaringType;
     }
 
-    public BencodeTypeDescriptor(MemberInfo memberInfo)
+    public BencodeTypeDescriptor(MemberInfo memberInfo, bool isBinary)
     {
-        IsBinary = false;
+        IsBinary = isBinary;
         OwnType = memberInfo.DeclaringType ??
             throw new ArgumentException(
             message: $"'{memberInfo}' must have a declaring type.",
@@ -20,8 +20,13 @@ internal sealed class BencodeTypeDescriptor : IBencodeTypeDescriptor
     }
 
     public BencodeTypeDescriptor(Type ownType)
+        : this(ownType, isBinary: false)
     {
-        IsBinary = false;
+    }
+
+    public BencodeTypeDescriptor(Type ownType, bool isBinary)
+    {
+        IsBinary = isBinary;
         OwnType = ownType;
     }
 

@@ -1,16 +1,17 @@
 // using System.Collections;
 // using System.Collections.Immutable;
 
-// namespace Bencodex.Serialization.Tests.General;
+// namespace Bencodex.Serialization.Tests.Dictionaries;
 
-// public class DictionaryTest
+// public class KeyStringValueNullableObjectTest : KeyValueTestBase<string, object?>
 // {
+//     private static readonly RandomUtility.DictionarySettings<TKey, TValue> Settings
+//         = new() { IsNullable = false };
+
 //     public static IEnumerable<object[]> TestData =>
 //     [
-//         [nameof(FieldClass.Dictionary1), RandomUtility.Dictionary(isNullable: false)],
-//         [nameof(FieldClass.Dictionary2), RandomUtility.Dictionary()],
-//         [nameof(FieldClass.ImmtableDictionary1), RandomUtility.ImmutableDictionary(isNullable: false)],
-//         [nameof(FieldClass.ImmtableDictionary2), RandomUtility.ImmutableDictionary()],
+//         [nameof(FieldClass.Dictionary), RandomUtility.Dictionary<string, object?>(isNullable: true)],
+//         [nameof(FieldClass.ImmtableDictionary), RandomUtility.ImmutableDictionary<string, object?>(isNullable: true)],
 //     ];
 
 //     [Fact]
@@ -88,38 +89,22 @@
 //     public sealed class FieldClass
 //     {
 //         [Bencode]
-//         public Dictionary<object, object> Dictionary1
-//             = RandomUtility.Dictionary(isNullable: false)!;
+//         public Dictionary<string, object?> Dictionary
+//             = RandomUtility.Dictionary<string, object?>(isNullable: true)!;
 
 //         [Bencode]
-//         public Dictionary<object, object?> Dictionary2
-//             = RandomUtility.Dictionary();
-
-//         [Bencode]
-//         public ImmutableDictionary<object, object> ImmtableDictionary1
-//             = RandomUtility.ImmutableDictionary(isNullable: false)!;
-
-//         [Bencode]
-//         public ImmutableDictionary<object, object?> ImmtableDictionary2
-//             = RandomUtility.ImmutableDictionary();
+//         public ImmutableDictionary<string, object?> ImmtableDictionary
+//             = RandomUtility.ImmutableDictionary<string, object?>(isNullable: true)!;
 //     }
 
 //     public sealed class PropertyClass
 //     {
 //         [Bencode]
-//         public Dictionary<object, object> Dictionary1 { get; set; }
-//             = RandomUtility.Dictionary(isNullable: false)!;
+//         public Dictionary<string, object?> Dictionary { get; set; }
+//             = RandomUtility.Dictionary<string, object?>(isNullable: true)!;
 
 //         [Bencode]
-//         public Dictionary<object, object?> Dictionary2 { get; set; }
-//             = RandomUtility.Dictionary();
-
-//         [Bencode]
-//         public ImmutableDictionary<object, object> ImmtableDictionary1 { get; set; }
-//             = RandomUtility.ImmutableDictionary(isNullable: false)!;
-
-//         [Bencode]
-//         public ImmutableDictionary<object, object?> ImmtableDictionary2 { get; set; }
-//             = RandomUtility.ImmutableDictionary();
+//         public ImmutableDictionary<string, object?> ImmtableDictionary { get; set; }
+//             = RandomUtility.ImmutableDictionary<string, object?>(isNullable: true)!;
 //     }
 // }

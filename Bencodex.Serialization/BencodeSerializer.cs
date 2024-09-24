@@ -1,4 +1,5 @@
 using Bencodex.Serialization.Converters;
+using Bencodex.Serialization.Utilities;
 using Bencodex.Types;
 
 namespace Bencodex.Serialization;
@@ -55,7 +56,7 @@ public class BencodeSerializer : IBencodeTypeContext, IBencodeTypeDescriptor
     {
         var underlyingType = Nullable.GetUnderlyingType(type);
         var memberType = underlyingType ?? type;
-        var converter = GetConverter(this, memberType);
+        var converter = GetConverter(typeDescriptor, memberType);
 
         if (underlyingType != null)
         {
@@ -66,5 +67,12 @@ public class BencodeSerializer : IBencodeTypeContext, IBencodeTypeDescriptor
     }
 
     protected virtual BencodeConverter GetConverter(IBencodeTypeDescriptor typeDescriptor, Type type)
-        => BencodeUtility.GetConverter(type) ?? BencodeBaseConverter.Default;
+    {
+        if (typeDescriptor.IsBinary == true)
+        {
+            return BinaryConverter.Default;
+        }
+
+        return ConverterUtility.GetConverter(type) ?? BencodeBaseConverter.Default;
+    }
 }
